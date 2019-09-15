@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>article_detail</title>
+</head>
+<body>
+<ul>
+    {% for foo in articles %}
+{#        <a href="/article/{{ foo.id }}"><li>{{ foo.title }}</li></a>#}
+        <a href="{% url 'article_detail' foo.id %}"><li>{{ foo.title }}</li></a>
+    {% endfor %}
+</ul>
+</body>
+</html>
