@@ -17,6 +17,6 @@ from django.urls import path
 from article import views
 
 urlpatterns = [
-    path('<int:article_id>', views.article_detail, name="文章详情"),
-    path('', views.article_list, name='文章list'),
+    path('<int:article_id>', views.article_detail, name="article_detail"),
+    path('', views.article_list, name='article_list'),
 ]

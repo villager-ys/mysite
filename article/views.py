@@ -11,6 +11,6 @@ def article_detail(request, article_id):
 
 
 def article_list(request):
-    articles = get_list_or_404(Article)
+    articles = Article.objects.filter(is_delete=False)
     context = {'articles': articles}
     return render_to_response('article_list.html', context)
