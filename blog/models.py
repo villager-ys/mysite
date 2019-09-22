@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.admin import User
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 # Create your models here.
@@ -10,10 +11,13 @@ class BlogType(models.Model):
     def __str__(self):
         return self.type_name
 
+    def blog_count(self):
+        return self.blog_set.count()
+
 
 class Blog(models.Model):
     title = models.CharField(max_length=30)
-    context = models.TextField()
+    context = RichTextUploadingField()
     author = models.ForeignKey(User, on_delete=False)
     is_delete = models.BooleanField(default=False)
     blog_type = models.ForeignKey(BlogType, on_delete=True)

@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from .models import Blog, BlogType
 from django.core.paginator import Paginator
+from django.conf import settings
 
 
 # Create your views here.
@@ -8,8 +9,12 @@ def blog_list(request):
     page_num = request.GET.get('page', 1)
     blogs = Blog.objects.all()
     blogs_with_page, page_size, dates = get_page_content(blogs, page_num)
+    date_dist = {}
+    for date in dates:
+        blog_count = Blog.objects.filter(create_time__year=date.year, create_time__month=date.month).count()
+        date_dist[date] = blog_count
     content = {'blogs': blogs_with_page, 'blog_types': BlogType.objects.all(),
-               'page_size': page_size, 'dates': dates}
+               'page_size': page_size, 'dates': date_dist}
     return render_to_response('blog_list.html', content)
 
 
@@ -33,7 +38,7 @@ def blog_with_type(request, blog_type_pk):
 
 
 def get_page_content(blogs, page_num):
-    ptr = Paginator(blogs, 5)  # 一页最大５篇
+    ptr = Paginator(blogs, settings.EACH_PAGE_BLOG_NUM)
     blogs_with_page = ptr.get_page(page_num)
     current_page_num = blogs_with_page.number  # 获取当前页码
     total = ptr.num_pages  # 获取最大页数

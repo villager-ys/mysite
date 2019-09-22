@@ -25,7 +25,7 @@
                                     href="{% url 'blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a>
                                 <span>创建时间：</span>{{ blog.create_time|date:"Y-m-d" }}
                             </p>
-                            <p>{{ blog.context|truncatechars:120 }}</p>
+                            <p>{{ blog.context|striptags|truncatechars:120 }}</p>
                         </div>
                     {% empty %}
                         <p>暂无博客，敬请期待</p>
@@ -71,7 +71,9 @@
                     <div class="panel-body">
                         <ul class="blog-types">
                             {% for blog_type in blog_types %}
-                                <li><a href="{% url 'blogs_with_type' blog_type.pk %}">{{ blog_type.type_name }}</a>
+                                <li><a href="{% url 'blogs_with_type' blog_type.pk %}">
+                                    {{ blog_type.type_name }}({{ blog_type.blog_count }})
+                                </a>
                                 </li>
                             {% empty %}
                                 <li>暂无分类</li>
@@ -81,9 +83,9 @@
                     <div class="panel-heading">博客归档:</div>
                     <div class="panel-body">
                         <ul class="blog-types">
-                            {% for date in dates %}
+                            {% for date, blog_count in dates.items %}
                                 <li>
-                                    <a href="{% url 'blog_with_date' date.year date.month %}">{{ date|date:"Y-m" }}</a>
+                                    <a href="{% url 'blog_with_date' date.year date.month %}">{{ date|date:"Y-m" }}({{ blog_count }})</a>
                                 </li>
                             {% empty %}
                                 <li>暂无博客归档</li>
