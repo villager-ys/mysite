@@ -22,7 +22,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='home'),
+    path('', views.home, name='home'),
     path('article/', include('article.urls')),
     path('blog/', include('blog.urls')),
     path('ckeditor', include('ckeditor_uploader.urls')),

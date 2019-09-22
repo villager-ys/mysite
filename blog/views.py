@@ -1,4 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
+
+from read_statistics.utils import read_statistics_once_read
 from .models import Blog, BlogType
 from django.core.paginator import Paginator
 from django.conf import settings
@@ -20,10 +22,13 @@ def blog_list(request):
 
 def blog_detail(request, blog_id):
     blog = get_object_or_404(Blog, id=blog_id)
+    read_cookie_key = read_statistics_once_read(request, blog)
     previous_blog = Blog.objects.filter(create_time__gt=blog.create_time).last()
     next_blog = Blog.objects.filter(create_time__lt=blog.create_time).first()
     content = {'blog': blog, 'previous_blog': previous_blog, 'next_blog': next_blog}
-    return render_to_response('blog_detail.html', content)
+    response = render_to_response('blog_detail.html', content)
+    response.set_cookie(read_cookie_key, 'true')  # 阅读cookie标记
+    return response
 
 
 def blog_with_type(request, blog_type_pk):

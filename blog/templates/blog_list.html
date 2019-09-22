@@ -23,7 +23,8 @@
                             <p class="blog-info">
                                 <span>分类：</span><a
                                     href="{% url 'blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type }}</a>
-                                <span>创建时间：</span>{{ blog.create_time|date:"Y-m-d" }}
+                                <span>创建时间：</span>{{ blog.create_time|date:"Y-m-d" }}&nbsp;
+                                &nbsp;阅读({{ blog.get_read_num }})
                             </p>
                             <p>{{ blog.context|striptags|truncatechars:120 }}</p>
                         </div>

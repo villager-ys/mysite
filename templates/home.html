@@ -4,11 +4,74 @@
 {% block title %}
     我的网站|首页
 {% endblock %}
+{% load staticfiles %}
 
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="{% static 'echarts/echarts.js' %}"></script>
+
 {% endblock %}
 
 {% block content %}
     <h3 class="home-content">欢迎访问我的网站，随便看</h3>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="main" style="width: 600px;height:400px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                xAxis: {
+                    type: 'category',
+                    data: {{ dates|safe }},   // x 轴分类
+                },
+                yAxis: {
+                    title: { text: null },
+                    show: false,
+                },
+                series: [{
+                    name: '阅读量',                     // 数据列名
+                    data: {{ read_nums }},
+                    type: 'line',
+                }]
+            };
+            ;
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        </script>
+    <!-- 图表容器 DOM -->
+{#    <div id="container"></div>#}
+{#    <script>#}
+{#        // 图表配置#}
+{#        var options = {#}
+{#            chart: {type: 'line'},#}
+{#            title: {text: null},#}
+{#            xAxis: {#}
+{#                categories: {{ dates|safe }},   // x 轴分类#}
+{#                tickmarkPlacement: 'on',#}
+{#            },#}
+{#            yAxis: {#}
+{#                title: {text: null},#}
+{#                labels: {enabled: false},#}
+{#                gridLineDashStyle: 'Dash',#}
+{#            },#}
+{#            series: [{                              // 数据列#}
+{#                name: '阅读量',                     // 数据列名#}
+{#                data: {{ read_nums }}               // 数据#}
+{#            }],#}
+{#            plotOptions: {#}
+{#                line: {#}
+{#                    dataLabels: {#}
+{#                        enabled: true#}
+{#                    }#}
+{#                }#}
+{#            },#}
+{#            legend: {enabled: false},#}
+{#            credits: {enabled: false},#}
+{#        };#}
+{#        // 图表初始化函数#}
+{#        var chart = Highcharts.chart('container', options);#}
+{#    </script>#}
 {% endblock %}

@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.admin import User
 from ckeditor_uploader.fields import RichTextUploadingField
+from read_statistics.models import ReadNumExpandMethod
 
-
-# Create your models here.
 
 class BlogType(models.Model):
     type_name = models.CharField(max_length=15)
@@ -15,7 +14,7 @@ class BlogType(models.Model):
         return self.blog_set.count()
 
 
-class Blog(models.Model):
+class Blog(models.Model, ReadNumExpandMethod):
     title = models.CharField(max_length=30)
     context = RichTextUploadingField()
     author = models.ForeignKey(User, on_delete=False)
