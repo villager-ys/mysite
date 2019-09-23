@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.auth.admin import User
 from ckeditor_uploader.fields import RichTextUploadingField
 from read_statistics.models import ReadNumExpandMethod
+from read_statistics.models import ReadDetail
 
 
 class BlogType(models.Model):
@@ -22,6 +24,7 @@ class Blog(models.Model, ReadNumExpandMethod):
     blog_type = models.ForeignKey(BlogType, on_delete=True)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
+    read_details = GenericRelation(ReadDetail)
 
     def __str__(self):
         return '<Blog: %s>' % self.title

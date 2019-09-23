@@ -8,70 +8,76 @@
 
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'home.css' %}">
-    <script src="{% static 'echarts/echarts.js' %}"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.3.0-rc.2/echarts.min.js"></script>
 
 {% endblock %}
 
 {% block content %}
     <h3 class="home-content">欢迎访问我的网站，随便看</h3>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-        <div id="main" style="width: 600px;height:400px;"></div>
-        <script type="text/javascript">
-            // 基于准备好的dom，初始化echarts实例
-            var myChart = echarts.init(document.getElementById('main'));
+    <div id="main"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
 
-            // 指定图表的配置项和数据
-            var option = {
-                xAxis: {
-                    type: 'category',
-                    data: {{ dates|safe }},   // x 轴分类
+        // 指定图表的配置项和数据
+        var option = {
+            xAxis: {
+                type: 'category',
+                data: {{ dates|safe }},   // x 轴分类
+                name: '前7日访问统计',
+                nameLocation: 'center',
+                nameTextStyle: {
+                    fontSize: '10',
+                    padding: [8, 4, 5, 6],
                 },
-                yAxis: {
-                    title: { text: null },
-                    show: false,
-                },
-                series: [{
-                    name: '阅读量',                     // 数据列名
-                    data: {{ read_nums }},
-                    type: 'line',
-                }]
-            };
-            ;
+            },
+            yAxis: {
+                title: {text: null},
+                show: false,
+            },
+            series: [{
+                name: '阅读量',                     // 数据列名
+                data: {{ read_nums }},
+                type: 'line',
+                itemStyle: {normal: {label: {show: true}}},
+            }]
+        };
+        ;
 
-            // 使用刚指定的配置项和数据显示图表。
-            myChart.setOption(option);
-        </script>
-    <!-- 图表容器 DOM -->
-{#    <div id="container"></div>#}
-{#    <script>#}
-{#        // 图表配置#}
-{#        var options = {#}
-{#            chart: {type: 'line'},#}
-{#            title: {text: null},#}
-{#            xAxis: {#}
-{#                categories: {{ dates|safe }},   // x 轴分类#}
-{#                tickmarkPlacement: 'on',#}
-{#            },#}
-{#            yAxis: {#}
-{#                title: {text: null},#}
-{#                labels: {enabled: false},#}
-{#                gridLineDashStyle: 'Dash',#}
-{#            },#}
-{#            series: [{                              // 数据列#}
-{#                name: '阅读量',                     // 数据列名#}
-{#                data: {{ read_nums }}               // 数据#}
-{#            }],#}
-{#            plotOptions: {#}
-{#                line: {#}
-{#                    dataLabels: {#}
-{#                        enabled: true#}
-{#                    }#}
-{#                }#}
-{#            },#}
-{#            legend: {enabled: false},#}
-{#            credits: {enabled: false},#}
-{#        };#}
-{#        // 图表初始化函数#}
-{#        var chart = Highcharts.chart('container', options);#}
-{#    </script>#}
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+    <div class="hot">
+        <ul>
+            <h3>今日热门博客：</h3>
+            {% for read_detail in today_hot %}
+                <li>
+                    <a href="{% url 'blog_detail' read_detail.content_object.pk %}">
+                        {{ read_detail.content_object.title }}({{ read_detail.read_num }})
+                    </a>
+                </li>
+            {% empty %}
+                <li>今天暂无访问！！！</li>
+            {% endfor %}
+            <h3>昨日热门博客：</h3>
+            {% for read_detail in yesterday_hot %}
+                <li>
+                    <a href="{% url 'blog_detail' read_detail.content_object.pk %}">
+                        {{ read_detail.content_object.title }}({{ read_detail.read_num }})
+                    </a>
+                </li>
+            {% empty %}
+                <li>昨天暂无访问！！！</li>
+            {% endfor %}
+            <h3>近7日热门博客</h3>
+            {% for hot in hot_for_7 %}
+                <li>
+                    <a href="{% url 'blog_detail' hot.id %}">{{ hot.title }}</a>
+                </li>
+            {% empty %}
+                <li>昨天暂无访问！！！</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

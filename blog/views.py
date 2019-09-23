@@ -1,9 +1,8 @@
 from django.shortcuts import render_to_response, get_object_or_404
-
-from read_statistics.utils import read_statistics_once_read
-from .models import Blog, BlogType
 from django.core.paginator import Paginator
 from django.conf import settings
+from .models import Blog, BlogType
+from read_statistics.utils import read_statistics_once_read
 
 
 # Create your views here.
@@ -49,7 +48,7 @@ def get_page_content(blogs, page_num):
     total = ptr.num_pages  # 获取最大页数
     page_size = list(range(max(current_page_num - 2, 1), current_page_num)) + list(
         range(current_page_num, min(current_page_num + 2, total) + 1))
-    # 加上省略号 # 不是第一页加上第一页，不是最后一个追加最后一页
+    # 加上省略号 # 不是第一页加上第一页,不是最后一个追加最后一页
     if page_size[0] - 1 >= 1:
         page_size.insert(0, 1)
         page_size.insert(1, '...')
