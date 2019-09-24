@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.conf import settings
 from .models import Blog, BlogType
@@ -16,7 +16,7 @@ def blog_list(request):
         date_dist[date] = blog_count
     content = {'blogs': blogs_with_page, 'blog_types': BlogType.objects.all(),
                'page_size': page_size, 'dates': date_dist}
-    return render_to_response('blog_list.html', content)
+    return render(request, 'blog_list.html', content)
 
 
 def blog_detail(request, blog_id):
@@ -25,7 +25,7 @@ def blog_detail(request, blog_id):
     previous_blog = Blog.objects.filter(create_time__gt=blog.create_time).last()
     next_blog = Blog.objects.filter(create_time__lt=blog.create_time).first()
     content = {'blog': blog, 'previous_blog': previous_blog, 'next_blog': next_blog}
-    response = render_to_response('blog_detail.html', content)
+    response = render(request, 'blog_detail.html', content)
     response.set_cookie(read_cookie_key, 'true')  # 阅读cookie标记
     return response
 
@@ -38,7 +38,7 @@ def blog_with_type(request, blog_type_pk):
     content = {'blogs': blogs_with_page, 'blog_type': blog_type,
                'blog_types': BlogType.objects.all(), 'page_size':
                    page_size, 'dates': dates}
-    return render_to_response('blog_with_type.html', content)
+    return render(request, 'blog_with_type.html', content)
 
 
 def get_page_content(blogs, page_num):
@@ -66,4 +66,4 @@ def blog_with_date(request, year, month):
     current_date = '%s年%s月' % (year, month)
     content = {'blogs': blogs_with_page, 'blog_types': BlogType.objects.all(),
                'page_size': page_size, 'dates': dates, 'current_date': current_date}
-    return render_to_response('blog_with_date.html', content)
+    return render(request, 'blog_with_date.html', content)
