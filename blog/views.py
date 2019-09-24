@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from .models import Blog, BlogType
 from read_statistics.utils import read_statistics_once_read
+from comments.models import Comments
 
 
 # Create your views here.
@@ -24,7 +26,9 @@ def blog_detail(request, blog_id):
     read_cookie_key = read_statistics_once_read(request, blog)
     previous_blog = Blog.objects.filter(create_time__gt=blog.create_time).last()
     next_blog = Blog.objects.filter(create_time__lt=blog.create_time).first()
-    content = {'blog': blog, 'previous_blog': previous_blog, 'next_blog': next_blog}
+    content_type = ContentType.objects.get_for_model(blog)
+    comments = Comments.objects.filter(content_type=content_type, object_id=blog.id)[:10]
+    content = {'blog': blog, 'previous_blog': previous_blog, 'next_blog': next_blog, 'comments': comments}
     response = render(request, 'blog_detail.html', content)
     response.set_cookie(read_cookie_key, 'true')  # 阅读cookie标记
     return response

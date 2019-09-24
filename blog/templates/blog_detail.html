@@ -35,24 +35,40 @@
                         <p>已经没有下一篇了</p>
                     {% endif %}
                 </div>
-                <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
-                    提交评论区域
+                <div style="margin-top: 2em; margin-bottom: 2em">
+                    <h3>提交评论区域</h3>
                     {% if user.is_authenticated %}
-                        已登录
+                        欢迎{{ user.username }},请评论：
+                        <form action="{% url 'comment' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="object_id" value="{{ blog.id }}">
+                            <input type="hidden" name="content-type" value="blog">
+                            <textarea name="comment"></textarea>
+                            <button type="submit">提交</button>
+                        </form>
                     {% else %}
                         请先登录
                         <form action="{% url 'login' %}" method="post">
                             {% csrf_token %}
-                           用户名 <input type="text" name="username">
-                            <br>
-                           密码 <input type="password" name="password">
-                            <br>
+                            <input type="text" name="username">
+                            <input type="password" name="password">
                             <button type="submit">提交</button>
                         </form>
                     {% endif %}
                 </div>
-                <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
-                    评论列表区域
+                <div style="margin-top: 2em; margin-bottom: 2em">
+                    <h3>评论列表区域</h3>
+                    <ul>
+                        {% for comment in comments %}
+                            <li>
+                                {{ comment.create_time }}&nbsp; 用户：{{ user }}
+                                <br>
+                                {{ comment.content }}
+                            </li>
+                        {% empty %}
+                            <p>暂无评论</p>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
