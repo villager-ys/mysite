@@ -36,7 +36,7 @@
                     {% endif %}
                 </div>
                 <div style="margin-top: 2em; margin-bottom: 2em">
-                    <h3>提交评论区域</h3>
+                    <h3 style=" border-bottom: 1px solid #ccc;padding-bottom: 0.4em;">提交评论区域</h3>
                     {% if user.is_authenticated %}
                         欢迎{{ user.username }},请评论：
                         <form action="{% url 'comment' %}" method="post">
@@ -47,28 +47,23 @@
                             <button type="submit">提交</button>
                         </form>
                     {% else %}
-                        请先登录
-                        <form action="{% url 'login' %}" method="post">
-                            {% csrf_token %}
-                            <input type="text" name="username">
-                            <input type="password" name="password">
-                            <button type="submit">提交</button>
-                        </form>
+                        您尚未登录
+                        <a href="{% url 'login' %}">登录</a>
+                        <span>or</span>
+                        <a href="{% url 'register' %}">注册</a>
                     {% endif %}
                 </div>
                 <div style="margin-top: 2em; margin-bottom: 2em">
-                    <h3>评论列表区域</h3>
-                    <ul>
+                    <h3 style=" border-bottom: 1px solid #ccc;padding-bottom: 0.4em;">评论列表区域</h3>
                         {% for comment in comments %}
-                            <li>
-                                {{ comment.create_time }}&nbsp; 用户：{{ user }}
-                                <br>
+                            <div>
+                                用户：{{ user }}
+                                ({{ comment.create_time }}):
                                 {{ comment.content }}
-                            </li>
+                            </div>
                         {% empty %}
                             <p>暂无评论</p>
                         {% endfor %}
-                    </ul>
                 </div>
             </div>
         </div>
