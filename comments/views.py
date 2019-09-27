@@ -1,22 +1,31 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import Comments
+from .forms import CommentsForm
 
 
+@csrf_exempt
 def comment(request):
     refer = request.META.get('HTTP_REFERER', reverse('home'))
-    object_id = int(request.POST.get('object_id', ''))
-    content_type = request.POST.get('content-type', '')
-    content = request.POST.get('comment', '').strip()
     user = request.user
-    # 利用ContentType反向获取Blog对象
-    model_class = ContentType.objects.get(model=content_type).model_class()
-    obj_model = model_class.objects.get(id=object_id)
-    comments = Comments()
-    comments.user = user
-    comments.content = content
-    comments.content_object = obj_model
-    comments.save()
-    return redirect(refer)
-
+    data = {}
+    comments_form = CommentsForm(request.POST, user=user)
+    if comments_form.is_valid():
+        comments = Comments()
+        comments.object_id = comments_form.cleaned_data['object_id']
+        comments.user = comments_form.cleaned_data['user']
+        comments.content_object = comments_form.cleaned_data['model_obj']
+        comments.content = comments_form.cleaned_data['comment']
+        comments.save()
+        # 返回数据
+        data['status'] = 'SUCCESS'
+        data['username'] = comments.user.username
+        data['comment_time'] = comments.create_time.strftime('%Y-%m-%d %H:%M:%S')
+        data['text'] = comments.content
+    else:
+        data['status'] = 'ERROR'
+        data['message'] = list(comments_form.errors.values())[0][0]
+    return JsonResponse(data)
